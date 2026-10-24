@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Internet Trend Scanner</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #020208;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: linear-gradient(145deg, #090a14, #02030a);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.3);
+            max-width: 520px;
+            width: 100%;
+            border: 2px solid #00bfff;
+        }
+        h1 {
+            color: #00bfff;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+        input {
+            width: 85%;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid #00bfff;
+            background: #000;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        button {
+            background: linear-gradient(45deg, #00bfff, #00ff80);
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+            transition: 0.2s;
+        }
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 25px #00ff80;
+        }
+        .loading {
+            font-size: 15px;
+            color: #00ff80;
+            margin: 20px 0;
+            display: none;
+            font-family: monospace;
+            text-align: left;
+            padding-left: 10%;
+            line-height: 1.8;
+        }
+        .result-box {
+            background: rgba(0,0,0,0.8);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px dashed #00bfff;
+            display: none;
+            text-align: left;
+        }
+        .result-title {
+            font-size: 18px;
+            color: #00ff80;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .stat-line {
+            margin: 12px 0;
+            font-size: 15px;
+            border-bottom: 1px solid #111424;
+            padding-bottom: 8px;
+        }
+        .highlight { color: #00bfff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Global Trend Scanner 🌐</h1>
+    <p>Scan live internet-databases op basis van naam-ID...</p>
+    
+    <input type="text" id="naamInput" placeholder="Typ een naam..." autocomplete="off">
+    <br>
+    <button onclick="analyseerNaam()">🌐 Start Live Server Query</button>
+
+    <div id="loader" class="loading">
+        📡 Verbinden met Google Trend API... OK<br>
+        📡 Ping sturen naar NL-Server [IP: 192.168.2.1]... VASTGELEGD<br>
+        🔍 Server logs scannen op naam-overeenkomsten... 100%<br>
+        📊 Data compileren naar profiel...
+    </div>
+
+    <div id="resultaat" class="result-box">
+        <div class="result-title">🔒 LIVE GOOGLE & SOCIAL TREND DOSSIER</div>
+        <div class="stat-line">👤 <span class="highlight">Gescand Doelwit:</span> <span id="resNaam"></span></div>
+        <div class="stat-line">⭐ <span class="highlight">Grootste Online Kenmerk:</span> <span id="resTalent"></span></div>
+        <div class="stat-line">⚡ <span class="highlight">Berekende Rizz-Factor:</span> <span id="resRizz"></span></div>
+        <div class="stat-line">🌐 <span class="highlight">Echte Google Zoektrend:</span> <span id="resInternet"></span></div>
+    </div>
+</div>
+
+<script>
+const talents = [
+    "Wordt online gezien als een absoluut programmeer-genie.",
+    "Blijft legendarisch lang op YouTube Shorts skippen in de nacht.",
+    "Heeft een keyboard-type-snelheid van een professionele hacker.",
+    "Kan binnen 5 seconden bepalen of een TikTok-video saai is of niet.",
+    "Staat erom bekend online discussies te winnen met slechts één emoji."
+];
+
+const powers = [
+    "99% (Extreem gevaarlijk hoog niveau van coolness).",
+    "45% (Gemiddeld, heeft soms een slechte haardag op foto's).",
+    "120% (Heeft zoveel Rizz dat de wifi er soms van uitvalt).",
+    "5% (Moet dringend stoppen met het sturen van saaie memes).",
+    "88% (Scoort superhoog op de gezelligheidsschaal van het internet)."
+];
+
+// Dit zijn échte zoektrends en internet-verschijnselen
+const internetData = [
+    "is gekoppeld aan de Google-zoektrend: 'hoe word ik snel rijk zonder huiswerk te maken'.",
+    "duikt op in de statistieken als grootverbruiker van online data voor Roblox-updates.",
+    "komt exact overeen met de internet-zoekopdracht: 'waarom luistert mijn zus nooit naar mij'.",
+    "is viraal gegaan in de database onder de categorie: 'meest actieve gamer van deze postcode'.",
+    "heeft een digitaal spoor achtergelaten dat linkt naar: 'hoe overleef ik school zonder in slaap te vallen'."
+];
+
+function analyseerNaam() {
+    let naam = document.getElementById("naamInput").value.trim();
+    if (naam === "") {
+        alert("Typ eerst een naam in!");
+        return;
+    }
+
+    document.getElementById("resultaat").style.display = "none";
+    document.getElementById("loader").style.display = "block";
+
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+        
+        // Formule om de naam te scannen
+        let num = 0;
+        for (let i = 0; i < naam.length; i++) {
+            num += naam.charCodeAt(i) * (i + 5);
+        }
+
+        let talentIndex = num % talents.length;
+        let powerIndex = (num + 2) % powers.length;
+        let internetIndex = (num + 4) % internetData.length;
+
+        document.getElementById("resNaam").innerText = naam;
+        document.getElementById("resTalent").innerText = talents[talentIndex];
+        document.getElementById("resRizz").innerText = powers[powerIndex];
+        document.getElementById("resInternet").innerText = internetData[internetIndex];
+        
+        document.getElementById("resultaat").style.display = "block";
+    }, 3000); // 3 seconden wachten maakt het nóg echter
+}
+</script>
+
+</body>
+</html>
